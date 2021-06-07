@@ -59,7 +59,7 @@ static void mg_bswitch_inching_cb(void *arg) {
   mgos_bthing_enum_t things = mgos_bthing_get_all();
   while (mgos_bthing_typeof_get_next(&things, &thing, MGOS_BSWITCH_TYPE)) {
     struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG((mgos_bswitch_t)thing);
-    if (cfg->inching_start > 0 && (cfg->inching_start - now) > (cfg->inching_timeout * 1000)) {
+    if (cfg->inching_start > 0 && (now - cfg->inching_start) > (cfg->inching_timeout * 1000)) {
       // stop inching
       cfg->inching_start = 0;
       // switch OFF the switch
