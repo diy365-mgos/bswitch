@@ -21,7 +21,8 @@
 #include <stdbool.h>
 #include "mgos_bthing.h"
 #include "mgos_bswitch.h"
-
+#include "mgos_bbactuator.h"
+#include "mgos_bbsensor.h"
 
 #ifdef __cplusplus
 extern "C" {
