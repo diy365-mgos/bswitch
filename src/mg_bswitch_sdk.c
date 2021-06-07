@@ -26,22 +26,40 @@ bool mg_bswitch_del_inching(mgos_bswitch_t sw, struct mg_bswitch_cfg *cfg) {
   return true;
 }
 
-bool mg_bswitch_pre_set_state_on(mgos_bswitch_t sw, struct mg_bswitch_cfg *cfg) {
-  /* check if some other switch having inching_lock is still ON */
-  mgos_bthing_t thing;
-  mgos_bthing_enum_t things = mgos_bthing_get_all();
-  while (mgos_bthing_typeof_get_next(&things, &thing, MGOS_BSWITCH_TYPE)) {
-    struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG((mgos_bswitch_t)thing);
-    if (cfg->inching_lock == true && cfg->inching_start > 0) {
-      LOG(LL_ERROR, ("Error switching '%s' ON. '%s' has inching-lock and it is still ON.",
-        mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw)), mgos_bthing_get_id(thing)));
-      return false;
+bool mg_bswitch_pre_set_state_on(mgos_bswitch_t sw, struct mg_bswitch_cfg *sw_cfg) {
+  if (sw_cfg->group_id != MGOS_BSWITCH_NO_GROUP) {
+    mgos_bthing_t thing;
+    mgos_bthing_enum_t things;
+
+    /* switch OFF all switches in the same group */
+    things = mgos_bthing_get_all();
+    while (mgos_bthing_typeof_get_next(&things, &thing, MGOS_BSWITCH_TYPE)) {
+      if (MG_BSWITCH_CFG((mgos_bswitch_t)thing)->group_id == sw_cfg->group_id) {
+        if (!mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false)) {
+          LOG(LL_ERROR, ("Error switching '%s' ON becuase error switching OFF the sibling '%s'.",
+            mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw)), mgos_bthing_get_id(thing)));
+          return false;
+        }
+      }
+    }
+
+    /* check if some other inching_lock switch in the same group is still ON */
+    things = mgos_bthing_get_all();
+    while (mgos_bthing_typeof_get_next(&things, &thing, MGOS_BSWITCH_TYPE)) {
+      struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG((mgos_bswitch_t)thing);
+      if (cfg->group_id == sw_cfg->group_id) {
+        if (cfg->inching_lock == true && cfg->inching_start > 0) {
+          LOG(LL_ERROR, ("Error switching '%s' ON because '%s' has inching-lock and it is still ON.",
+            mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw)), mgos_bthing_get_id(thing)));
+          return false;
+        }
+      }
     }
   }
 
   /* remove inching if configured and in progress */
-  if (!mg_bswitch_del_inching(sw, cfg)) {
-    LOG(LL_ERROR, ("Error switching '%s' ON becuase failure on turning off inching.",
+  if (!mg_bswitch_del_inching(sw, sw_cfg)) {
+    LOG(LL_ERROR, ("Error switching '%s' ON becuase error deleting inching.",
       mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw))));
     return false;
   }
