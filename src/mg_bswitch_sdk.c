@@ -27,6 +27,7 @@ bool mg_bswitch_del_inching(mgos_bswitch_t sw, struct mg_bswitch_cfg *cfg) {
 }
 
 bool mg_bswitch_pre_set_state_on(mgos_bswitch_t sw, struct mg_bswitch_cfg *sw_cfg) {
+  LOG(LL_INFO,("Strting mg_bswitch_pre_set_state_on..."));
   if (sw_cfg->group_id != MGOS_BSWITCH_NO_GROUP) {
     mgos_bthing_t thing;
     mgos_bthing_enum_t things = mgos_bthing_get_all();
@@ -57,6 +58,7 @@ bool mg_bswitch_pre_set_state_on(mgos_bswitch_t sw, struct mg_bswitch_cfg *sw_cf
     return false;
   }
 
+  LOG(LL_INFO,("mg_bswitch_pre_set_state_on successfully completed."));
   return true;
 }
 
@@ -109,6 +111,7 @@ enum MG_BTHING_STATE_RESULT mg_bswitch_setting_state_cb(struct mg_bthing_actu *s
         enum MG_BTHING_STATE_RESULT ret = cfg->overrides.setting_state_cb(sw, state, userdata);
         if (ret != MG_BTHING_STATE_RESULT_ERROR) {
           mg_bswitch_post_set_state((mgos_bswitch_t )sw, cfg, bool_state);
+          LOG(LL_INFO, ("mg_bswitch_setting_state_cb returned %d", ret));
           return ret;
         }
       }
