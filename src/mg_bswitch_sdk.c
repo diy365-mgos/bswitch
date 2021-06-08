@@ -34,22 +34,19 @@ bool mg_bswitch_pre_set_state_on(mgos_bswitch_t sw, struct mg_bswitch_cfg *sw_cf
     while (mgos_bthing_typeof_get_next(&things, &thing, MGOS_BSWITCH_TYPE)) {
       struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG((mgos_bswitch_t)thing);
       if ((void *)thing != (void *)sw && cfg->group_id == sw_cfg->group_id) {
-        LOG(LL_INFO, ("Checking %s...", mgos_bthing_get_id(thing)));
         // check if some other inching_lock switch in the same group is still ON
         if (cfg->inching_lock == true && cfg->inching_start > 0) {
-          LOG(LL_INFO, ("NOOO, inching-lock for %s!", mgos_bthing_get_id(thing)));
           LOG(LL_ERROR, ("Error switching '%s' ON because '%s' has inching-lock and it is still ON.",
             mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw)), mgos_bthing_get_id(thing)));
           return false;
         }
         // switch OFF all switches in the same group 
-        /* LOG(LL_INFO, ("Switching OFF %s...", mgos_bthing_get_id(thing)));
+        LOG(LL_INFO, ("Switching OFF #1 %s...", mgos_bthing_get_id(thing)));
         if (!mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false)) {
-          LOG(LL_INFO, ("NOOO, error switching OFF %s!", mgos_bthing_get_id(thing)));
           LOG(LL_ERROR, ("Error switching '%s' ON becuase error switching OFF the sibling '%s'.",
             mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw)), mgos_bthing_get_id(thing)));
           return false;
-        } */
+        }
       }
     }
   }
@@ -109,9 +106,10 @@ enum MG_BTHING_STATE_RESULT mg_bswitch_setting_state_cb(struct mg_bthing_actu *s
     if (mg_bbsensor_state_to_bool(MGOS_BBACTUATOR_SENSCAST(MGOS_BSWITCH_DOWNCAST(sw)), state, &bool_state)) {
       struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG(sw);
       if (mg_bswitch_pre_set_state((mgos_bswitch_t )sw, cfg, bool_state)) {
-
+        LOG(LL_INFO, ("Switching %s #2 %s...", (bool_state?"ON":"OFF"), mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw))));
         enum MG_BTHING_STATE_RESULT ret = cfg->overrides.setting_state_cb(sw, state, userdata);
         if (ret != MG_BTHING_STATE_RESULT_ERROR) {
+          LOG(LL_INFO, ("Switched %s %s.", (bool_state?"ON":"OFF"), mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw))));
           mg_bswitch_post_set_state((mgos_bswitch_t )sw, cfg, bool_state);
           return ret;
         }
