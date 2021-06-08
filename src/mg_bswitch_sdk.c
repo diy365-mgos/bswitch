@@ -33,7 +33,7 @@ bool mg_bswitch_pre_set_state_on(mgos_bswitch_t sw, struct mg_bswitch_cfg *sw_cf
     /* loop all switches in the same group */
     while (mgos_bthing_typeof_get_next(&things, &thing, MGOS_BSWITCH_TYPE)) {
       struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG((mgos_bswitch_t)thing);
-      if (thing != sw && cfg->group_id == sw_cfg->group_id) {
+      if ((void *)thing != (void *)sw && cfg->group_id == sw_cfg->group_id) {
         /* check if some other inching_lock switch in the same group is still ON */
         if (cfg->inching_lock == true && cfg->inching_start > 0) {
           LOG(LL_ERROR, ("Error switching '%s' ON because '%s' has inching-lock and it is still ON.",
