@@ -43,10 +43,10 @@ mgos_bswitch_t mgos_bswitch_create(const char *id, int group_id, int switching_t
 }
 
 bool mgos_bswitch_set_inching(mgos_bswitch_t sw, int timeout, bool lock) {
-  if (sw && (timeout > 0)) {
+  if (sw && (timeout > 0 || timeout == MGOS_BSWITCH_NO_INCHING)) {
     struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG(sw);
     cfg->inching_timeout = timeout;
-    cfg->inching_lock = lock;
+    cfg->inching_lock = (timeout == MGOS_BSWITCH_NO_INCHING ? false : lock);
     return true;
   }
   return false;

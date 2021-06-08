@@ -200,6 +200,6 @@ Sets the inching mode of a bSwitch. Returns `true` on success, or `false` otherw
 |--|--|
 |sw|A bSwitch.|
 |timeout|The inching timeout, in milliseconds. Set to `MGOS_BSWITCH_NO_INCHING` to disable inching mode.|
-|lock|If `true`, this flag prevents a switch to be turned OFF before its inching timeout. Set to `false` to disable the lock.|
+|lock|If `true`, this flag prevents a switch to be turned OFF before its inching timeout. Set to `false` to disable the lock. Ignored if `timeout` is `MGOS_BSWITCH_NO_INCHING`.|
 ## To Do
 - Implement javascript APIs for [Mongoose OS MJS](https://github.com/mongoose-os-libs/mjs).
