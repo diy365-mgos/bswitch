@@ -34,14 +34,18 @@ bool mg_bswitch_pre_set_state_on(mgos_bswitch_t sw, struct mg_bswitch_cfg *sw_cf
     while (mgos_bthing_typeof_get_next(&things, &thing, MGOS_BSWITCH_TYPE)) {
       struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG((mgos_bswitch_t)thing);
       if ((void *)thing != (void *)sw && cfg->group_id == sw_cfg->group_id) {
+        LOG(LL_INFO, ("Checking %s...", mgos_bthing_get_id(thing)));
         /* check if some other inching_lock switch in the same group is still ON */
         if (cfg->inching_lock == true && cfg->inching_start > 0) {
+          LOG(LL_INFO, ("NOOO, inching-lock for %s!", mgos_bthing_get_id(thing)));
           LOG(LL_ERROR, ("Error switching '%s' ON because '%s' has inching-lock and it is still ON.",
             mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw)), mgos_bthing_get_id(thing)));
           return false;
         }
         /* switch OFF all switches in the same group */
+        LOG(LL_INFO, ("Switching OFF %s...", mgos_bthing_get_id(thing)));
         if (!mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false)) {
+          LOG(LL_INFO, ("NOOO, error switching OFF %s!", mgos_bthing_get_id(thing)));
           LOG(LL_ERROR, ("Error switching '%s' ON becuase error switching OFF the sibling '%s'.",
             mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw)), mgos_bthing_get_id(thing)));
           return false;
