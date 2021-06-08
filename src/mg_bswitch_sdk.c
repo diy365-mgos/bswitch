@@ -106,10 +106,10 @@ enum MG_BTHING_STATE_RESULT mg_bswitch_setting_state_cb(struct mg_bthing_actu *s
     if (mg_bbsensor_state_to_bool(MGOS_BBACTUATOR_SENSCAST(MGOS_BSWITCH_DOWNCAST(sw)), state, &bool_state)) {
       struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG(sw);
       if (mg_bswitch_pre_set_state((mgos_bswitch_t )sw, cfg, bool_state)) {
-        LOG(LL_INFO, ("Switching %s #2 %s...", (bool_state?"ON":"OFF"), mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw))));
+        LOG(LL_INFO, ("Switching %s(%s) #2 %s...", (bool_state?"ON":"OFF"), mgos_bvar_get_str(state), mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw))));
         enum MG_BTHING_STATE_RESULT ret = cfg->overrides.setting_state_cb(sw, state, userdata);
         if (ret != MG_BTHING_STATE_RESULT_ERROR) {
-          LOG(LL_INFO, ("Switched %s %s.", (bool_state?"ON":"OFF"), mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw))));
+          LOG(LL_INFO, ("Switched %s(%s) %s.", (bool_state?"ON":"OFF"), mgos_bvar_get_str(state), mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw))));
           mg_bswitch_post_set_state((mgos_bswitch_t )sw, cfg, bool_state);
           return ret;
         }
