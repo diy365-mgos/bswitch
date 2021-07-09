@@ -37,10 +37,10 @@ static int gpio_pin3 = 12;  //Wemos D7
 static int gpio_pin4 = 13;  //Wemos D6
 
 static void switch_state_changed_cb(int ev, void *ev_data, void *userdata) {
-  mgos_bthing_t thing = MGOS_BSWITCH_THINGCAST((mgos_bswitch_t)ev_data);
+  struct mgos_bthing_state_changed_arg *arg = (struct mgos_bthing_state_changed_arg *)ev_data;
 
   LOG(LL_INFO, ("The '%s' has been switched %s",
-    mgos_bthing_get_id(thing), mgos_bvar_get_str(mgos_bthing_get_state(thing))));
+    mgos_bthing_get_id(arg->thing), mgos_bvar_get_str(arg->state)));
 }
 
 void toggle_switch1_cb(void *param) {
