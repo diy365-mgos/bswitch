@@ -102,7 +102,7 @@ enum MG_BTHING_STATE_RESULT mg_bswitch_setting_state_cb(struct mg_bthing_actu *s
                                                         void *userdata) {
   if (sw && state) {
     bool bool_state;
-    if (mg_bbsensor_state_to_bool(MGOS_BBACTUATOR_SENSCAST(MGOS_BSWITCH_DOWNCAST(sw)), state, &bool_state)) {
+    if (mgos_bbsensor_state_parse(MGOS_BBACTUATOR_SENSCAST(MGOS_BSWITCH_DOWNCAST(sw)), state, &bool_state)) {
       struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG(sw);
       if (mg_bswitch_pre_set_state((mgos_bswitch_t )sw, cfg, bool_state)) {
         enum MG_BTHING_STATE_RESULT ret = cfg->overrides.setting_state_cb(sw, state, userdata);
