@@ -5,7 +5,7 @@ A bSwitch allows you to easily manage physical switches like relays.
 - **Inching mode** - A bSwitch can be easily configured to be automatically turned off after a timeout.
 - **Inching lock** - A locked bSwitch cannot be turned off until the inching timeout is expired.
 - **Interlock mode** - Two or more interlocked bSwitches cannot be turned on simultaneously. When one switch is turned on, all the others are forcibly turned off. Only one single interlocked bSwitch can be turned on at a time. 
-- **Verbose state** - Optionally, you can configure verbose states instead of default booleans (e.g: 'ON'/'OFF'). This feature is inherited form [bBinarySensors](https://github.com/diy365-mgos/bbsensor#features).
+- **Verbose state** - Optionally, you can configure verbose state instead of default booleans (e.g: 'ON'/'OFF'). This feature is inherited form [bBinarySensors](https://github.com/diy365-mgos/bbsensor#features).
 ## Get Started in C/C++
 Include the library in your `mos.yml` file.
 ```yaml
