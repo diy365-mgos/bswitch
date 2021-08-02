@@ -7,11 +7,7 @@ A bSwitch allows you to easily manage physical switches like relays.
 - **Interlock mode** - Two or more interlocked bSwitches cannot be turned on simultaneously. When one switch is turned on, all the others are forcibly turned off. Only one single interlocked bSwitch can be turned on at a time. 
 - **Verbose state** - Optionally, you can configure verbose state instead of default booleans (e.g: 'ON'/'OFF'). This feature is inherited form [bBinarySensors](https://github.com/diy365-mgos/bbsensor#features).
 ## Get Started in C/C++
-Include the library in your `mos.yml` file.
-```yaml
-libs:
-  - origin: https://github.com/diy365-mgos/bswitch
-```
+Copy, build and flash one of the following ready-to-use firmwares.
 #### Example 1 - 4 relays array
 Createa 4 relays array having following configuration:
 - Relay #1: standard mode
@@ -21,9 +17,10 @@ Createa 4 relays array having following configuration:
 Before running the code sample, you must wire your boardas indicated in the schema below.
 ![Example 1 - sketch](docs/example1_sketch_bb.png)
 
-In addition, include this library in your mos.yml file.
+Include these libraries in your mos.yml file.
 ```yaml
 libs:
+  - origin: https://github.com/diy365-mgos/bswitch
   - origin: https://github.com/diy365-mgos/bthing-gpio
 ```
 ```c
