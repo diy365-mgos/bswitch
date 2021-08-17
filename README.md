@@ -61,14 +61,14 @@ enum mgos_app_init_result mgos_app_init(void) {
   mgos_event_add_handler(MGOS_EV_BTHING_STATE_CHANGED, switch_state_changed_cb, NULL);
 
   // create the switch #1 - standard mode
-  mgos_bswitch_t sw1 = mgos_bswitch_create("switch1", MGOS_BSWITCH_NO_GROUP, MGOS_BSWITCH_DEFAULT_SWITCHING_TIME);
+  mgos_bswitch_t sw1 = mgos_bswitch_create("switch1", "relays", MGOS_BSWITCH_NO_GROUP, MGOS_BSWITCH_DEFAULT_SWITCHING_TIME);
   mgos_bbsensor_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw1), "ON", "OFF");
   mgos_bthing_gpio_attach(MGOS_BSWITCH_THINGCAST(sw1), gpio_pin1, true, MGOS_GPIO_PULL_UP);
   // simulate an external trigger for toggling 'switch1' state
   mgos_set_timer(10000, MGOS_TIMER_REPEAT, toggle_switch1_cb, sw1);
 
   // create the switch #2 - inching mode
-  mgos_bswitch_t sw2 = mgos_bswitch_create("switch2", MGOS_BSWITCH_NO_GROUP, MGOS_BSWITCH_DEFAULT_SWITCHING_TIME);
+  mgos_bswitch_t sw2 = mgos_bswitch_create("switch2", "relays", MGOS_BSWITCH_NO_GROUP, MGOS_BSWITCH_DEFAULT_SWITCHING_TIME);
   mgos_bbsensor_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw2), "ON", "OFF");
   mgos_bthing_gpio_attach(MGOS_BSWITCH_THINGCAST(sw2), gpio_pin2, true, MGOS_GPIO_PULL_UP);
   mgos_bswitch_set_inching(sw2, 1000, true);
@@ -76,11 +76,11 @@ enum mgos_app_init_result mgos_app_init(void) {
   mgos_set_timer(3000, MGOS_TIMER_REPEAT, turn_switch2_on_cb, sw2);
 
   // create the switch #3 - interlock monde (group 1)
-  mgos_bswitch_t sw3 = mgos_bswitch_create("switch3", 1, MGOS_BSWITCH_DEFAULT_SWITCHING_TIME);
+  mgos_bswitch_t sw3 = mgos_bswitch_create("switch3", "relays", 1, MGOS_BSWITCH_DEFAULT_SWITCHING_TIME);
   mgos_bbsensor_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw3), "ON", "OFF");
   mgos_bthing_gpio_attach(MGOS_BSWITCH_THINGCAST(sw3), gpio_pin3, true, MGOS_GPIO_PULL_UP);
   // create the switch #4 - interlock monde (group 1)
-  mgos_bswitch_t sw4 = mgos_bswitch_create("switch4", 1, MGOS_BSWITCH_DEFAULT_SWITCHING_TIME);
+  mgos_bswitch_t sw4 = mgos_bswitch_create("switch4", "relays", 1, MGOS_BSWITCH_DEFAULT_SWITCHING_TIME);
   mgos_bbsensor_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw4), "ON", "OFF");
   mgos_bthing_gpio_attach(MGOS_BSWITCH_THINGCAST(sw4), gpio_pin4, true, MGOS_GPIO_PULL_UP);
   // simulate an external trigger for toggling 'switch3' and 'switch4'
