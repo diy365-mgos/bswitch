@@ -75,9 +75,7 @@ bool mg_bswitch_pre_set_state(mgos_bswitch_t sw, struct mg_bswitch_cfg *cfg, boo
 
 void mg_bswitch_post_set_state_on(mgos_bswitch_t sw, struct mg_bswitch_cfg *cfg) {
   /* start inching count-down */
-  LOG(LL_INFO, ("mg_bswitch_post_set_state_on()...")); // CANCEL
   if (cfg->inching_timeout != MGOS_BSWITCH_NO_INCHING) {
-    LOG(LL_INFO, ("mg_bswitch_post_set_state_on() #2...")); // CANCEL
     cfg->inching_start = mgos_uptime_micros();
   }
 }
