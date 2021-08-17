@@ -37,7 +37,7 @@ static void switch_state_changed_cb(int ev, void *ev_data, void *userdata) {
   struct mgos_bthing_state_changed_arg *arg = (struct mgos_bthing_state_changed_arg *)ev_data;
 
   LOG(LL_INFO, ("The '%s' has been switched %s",
-    mgos_bthing_get_id(arg->thing), mgos_bvar_get_str(arg->state)));
+    mgos_bthing_get_uid(arg->thing), mgos_bvar_get_str(arg->state)));
 }
 
 void toggle_switch1_cb(void *param) {
@@ -50,9 +50,9 @@ void turn_switch2_on_cb(void *param) {
 
 void toggle_switch_grp_cb(void *param) {
   bool state;
-  mgos_bswitch_t sw = (mgos_bswitch_t)mgos_bthing_get("switch3");
+  mgos_bswitch_t sw = (mgos_bswitch_t)mgos_bthing_get_by_uid("switch3");
   mgos_bbsensor_get_state(MGOS_BSWITCH_SENSCAST(sw), &state);
-  if (state) sw = (mgos_bswitch_t)mgos_bthing_get("switch4");
+  if (state) sw = (mgos_bswitch_t)mgos_bthing_get_by_uid("switch4");
   mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST(sw), true);
   (void) param;
 }
@@ -142,7 +142,7 @@ Casts a bSwitch to a generic bThing to be used with [inherited bThing APIs](http
 Example:
 ```c
 mgos_bswitch_t sw = mgos_bswitch_create(...);
-LOG(LL_INFO, ("%s successfully created.", mgos_bthing_get_id(MGOS_BSWITCH_THINGCAST(sw))));
+LOG(LL_INFO, ("%s successfully created.", mgos_bthing_get_uid(MGOS_BSWITCH_THINGCAST(sw))));
 ```
 ### MGOS_BSWITCH_SENSCAST
 ```c
