@@ -45,6 +45,26 @@ mgos_bswitch_t mgos_bswitch_create(const char *id, int group_id, int switching_t
   return NULL; 
 }
 
+static void mg_bswitch_inching_cb(void *arg) {
+  int64_t now = mgos_uptime_micros();
+
+  mgos_bthing_t thing;
+  mgos_bthing_enum_t things = mgos_bthing_get_all();
+  while (mgos_bthing_filter_get_next(&things, &thing, MGOS_BTHING_FILTER_BY_TYPE, MGOS_BSWITCH_TYPE)) {
+    LOG(LL_INFO, ("mgos_bthing_filter_get_next on POLLING")); // CANCEL
+    struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG((mgos_bswitch_t)thing);
+    if (cfg->inching_timeout != MGOS_BSWITCH_NO_INCHING && cfg->inching_start > 0) {
+      if ((now - cfg->inching_start) > (cfg->inching_timeout * 1000)) {
+        // stop inching
+        cfg->inching_start = 0;
+        // switch OFF the switch
+        mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false);
+      }
+    }
+  }
+  (void) arg;
+}
+
 bool mgos_bswitch_set_inching(mgos_bswitch_t sw, int timeout, bool lock) {
   if (sw && (timeout > 0 || timeout == MGOS_BSWITCH_NO_INCHING)) {
 
@@ -74,24 +94,6 @@ bool mgos_bswitch_set_inching(mgos_bswitch_t sw, int timeout, bool lock) {
   return false;
 }
 
-static void mg_bswitch_inching_cb(void *arg) {
-  int64_t now = mgos_uptime_micros();
-
-  mgos_bthing_t thing;
-  mgos_bthing_enum_t things = mgos_bthing_get_all();
-  while (mgos_bthing_filter_get_next(&things, &thing, MGOS_BTHING_FILTER_BY_TYPE, MGOS_BSWITCH_TYPE)) {
-    struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG((mgos_bswitch_t)thing);
-    if (cfg->inching_timeout != MGOS_BSWITCH_NO_INCHING && cfg->inching_start > 0) {
-      if ((now - cfg->inching_start) > (cfg->inching_timeout * 1000)) {
-        // stop inching
-        cfg->inching_start = 0;
-        // switch OFF the switch
-        mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false);
-      }
-    }
-  }
-  (void) arg;
-}
 
 bool mgos_bswitch_init() {
   return true;
