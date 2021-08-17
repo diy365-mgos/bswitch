@@ -82,7 +82,7 @@ bool mgos_bswitch_set_inching(mgos_bswitch_t sw, int timeout, bool lock) {
       // timeout == MGOS_BSWITCH_NO_INCHING
       --s_inching_count;
       if (s_inching_count == 0 && s_inching_timer_id != MGOS_INVALID_TIMER_ID) {
-        mgos_timer_clear(s_inching_timer_id);
+        mgos_clear_timer(s_inching_timer_id);
       }
     }
 
