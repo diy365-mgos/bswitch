@@ -45,7 +45,7 @@ mgos_bbsensor_t MGOS_BSWITCH_SENSCAST(mgos_bswitch_t sw);
 
 mgos_bbactuator_t MGOS_BSWITCH_DOWNCAST(mgos_bswitch_t sw);
 
-mgos_bswitch_t mgos_bswitch_create(const char *id, const char *domain, int group_id, int switching_time);
+mgos_bswitch_t mgos_bswitch_create(const char *id, int group_id, int switching_time, const char *domain);
 
 bool mgos_bswitch_set_inching(mgos_bswitch_t sw, int timeout, bool lock);
 

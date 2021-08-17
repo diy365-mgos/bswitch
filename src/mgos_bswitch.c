@@ -19,7 +19,7 @@ mgos_bbactuator_t MGOS_BSWITCH_DOWNCAST(mgos_bswitch_t sw) {
   return (mgos_bbactuator_t)sw;
 }
 
-mgos_bswitch_t mgos_bswitch_create(const char *id, const char *domain, int group_id, int switching_time) {
+mgos_bswitch_t mgos_bswitch_create(const char *id, int group_id, int switching_time, const char *domain) {
   mgos_bswitch_t MG_BSWITCH_NEW(sw);
   if (mg_bthing_init(MG_BTHING_ACTU_CAST4(sw), id, MGOS_BSWITCH_TYPE, domain)) {
     struct mg_bswitch_cfg *sw_cfg = calloc(1, sizeof(struct mg_bswitch_cfg));
