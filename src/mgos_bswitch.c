@@ -53,7 +53,7 @@ static void mg_bswitch_inching_cb(void *arg) {
   while (mgos_bthing_filter_get_next(&things, &thing, MGOS_BTHING_FILTER_BY_TYPE, MGOS_BSWITCH_TYPE)) {
     
     struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG((mgos_bswitch_t)thing);
-    LOG(LL_INFO, ("inching_timeout=%d / inching_start=%ld)", cfg->inching_timeout,cfg->inching_start)); // CANCEL
+    LOG(LL_INFO, ("inching_timeout=%d / inching_start=%ld)", cfg->inching_timeout, (long)cfg->inching_start)); // CANCEL
     if (cfg->inching_timeout != MGOS_BSWITCH_NO_INCHING && cfg->inching_start > 0) {
       if ((now - cfg->inching_start) > (cfg->inching_timeout * 1000)) {
         // stop inching
