@@ -7,6 +7,9 @@
 #include "mjs.h"
 #endif
 
+static int s_inching_timer_id = MGOS_INVALID_TIMER_ID;
+static int s_inching_count = 0;
+
 mgos_bthing_t MGOS_BSWITCH_THINGCAST(mgos_bswitch_t sw) {
   return MG_BTHING_SENS_CAST4(MG_BSWITCH_CAST1(sw));
 }
@@ -25,9 +28,9 @@ mgos_bswitch_t mgos_bswitch_create(const char *id, int group_id, int switching_t
     struct mg_bswitch_cfg *sw_cfg = calloc(1, sizeof(struct mg_bswitch_cfg));
     struct mg_bbsensor_cfg *sens_cfg = calloc(1, sizeof(struct mg_bbsensor_cfg));
     if (sens_cfg && sw_cfg) {
-      if (mg_bswitch_init(sw, group_id, switching_time, sw_cfg, sens_cfg) &&
-          mg_bthing_register(MGOS_BSWITCH_THINGCAST(sw))) {
-        LOG(LL_INFO, ("bSwitch '%s' successfully created.", id));
+      mgos_bthing_t thing = MGOS_BSWITCH_THINGCAST(sw);
+      if (mg_bswitch_init(sw, group_id, switching_time, sw_cfg, sens_cfg) && mg_bthing_register(thing)) {
+        LOG(LL_INFO, ("bSwitch '%s' successfully created.", mgos_bthing_get_uid(thing)));
         return sw;
       }
     } else {
@@ -44,6 +47,25 @@ mgos_bswitch_t mgos_bswitch_create(const char *id, int group_id, int switching_t
 
 bool mgos_bswitch_set_inching(mgos_bswitch_t sw, int timeout, bool lock) {
   if (sw && (timeout > 0 || timeout == MGOS_BSWITCH_NO_INCHING)) {
+
+    if (timeout > 0) {
+      if (s_inching_timer_id == MGOS_INVALID_TIMER_ID) {
+        // initialize the inching global timer
+        s_inching_timer_id = mgos_set_timer(10, MGOS_TIMER_REPEAT, mg_bswitch_inching_cb, NULL);
+        if (s_inching_timer_id == MGOS_INVALID_TIMER_ID) {
+          LOG(LL_ERROR, ("Unable to start the internal inching timer for bSwitches.'"));
+          return false;
+        }
+      }
+      ++s_inching_count;
+    } else {
+      // timeout == MGOS_BSWITCH_NO_INCHING
+      --s_inching_count;
+      if (s_inching_count == 0 && s_inching_timer_id != MGOS_INVALID_TIMER_ID) {
+        mgos_timer_clear(s_inching_timer_id);
+      }
+    }
+
     struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG(sw);
     cfg->inching_timeout = timeout;
     cfg->inching_lock = (timeout == MGOS_BSWITCH_NO_INCHING ? false : lock);
@@ -72,10 +94,5 @@ static void mg_bswitch_inching_cb(void *arg) {
 }
 
 bool mgos_bswitch_init() {
-  // initialize the polling global timer
-  if (mgos_set_timer(10, MGOS_TIMER_REPEAT, mg_bswitch_inching_cb, NULL) == MGOS_INVALID_TIMER_ID) {
-    LOG(LL_ERROR, ("Unable to start the internal inching timer for bSwitches.'"));
-    return false;
-  }
   return true;
 }
