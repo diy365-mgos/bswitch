@@ -52,18 +52,13 @@ static void mg_bswitch_inching_cb(void *arg) {
   mgos_bthing_enum_t things = mgos_bthing_get_all();
   while (mgos_bthing_filter_get_next(&things, &thing, MGOS_BTHING_FILTER_BY_TYPE, MGOS_BSWITCH_TYPE)) {
     
-    LOG(LL_INFO, ("POLLING: '%s'", mgos_bthing_get_uid(thing))); // CANCEL
     struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG((mgos_bswitch_t)thing);
-    LOG(LL_INFO, ("inching_timeout=%d / inching_start=%ld)", cfg->inching_timeout, (long)cfg->inching_start)); // CANCEL
     if (cfg->inching_timeout != MGOS_BSWITCH_NO_INCHING && cfg->inching_start > 0) {
       if ((now - cfg->inching_start) > (cfg->inching_timeout * 1000)) {
         // stop inching
         cfg->inching_start = 0;
         // switch OFF the switch
-        LOG(LL_INFO, ("AUTO SWITCH OFF (by inching)")); // CANCEL
         mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false);
-      } else {
-        LOG(LL_INFO, ("NOT EXPIRED")); // CANCEL
       }
     }
   }
@@ -94,7 +89,6 @@ bool mgos_bswitch_set_inching(mgos_bswitch_t sw, int timeout, bool lock) {
     struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG(sw);
     cfg->inching_timeout = timeout;
     cfg->inching_lock = (timeout == MGOS_BSWITCH_NO_INCHING ? false : lock);
-    LOG(LL_INFO, ("inching_timeout = %d", cfg->inching_timeout)); // CANCEL
     return true;
   }
   return false;
