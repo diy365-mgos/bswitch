@@ -53,6 +53,7 @@ static void mg_bswitch_inching_cb(void *arg) {
   while (mgos_bthing_filter_get_next(&things, &thing, MGOS_BTHING_FILTER_BY_TYPE, MGOS_BSWITCH_TYPE)) {
     
     struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG((mgos_bswitch_t)thing);
+    LOG(LL_INFO, ("inching_timeout=%d / inching_start=%d)", cfg->inching_timeout,cfg->inching_start)); // CANCEL
     if (cfg->inching_timeout != MGOS_BSWITCH_NO_INCHING && cfg->inching_start > 0) {
       if ((now - cfg->inching_start) > (cfg->inching_timeout * 1000)) {
         // stop inching
@@ -60,6 +61,8 @@ static void mg_bswitch_inching_cb(void *arg) {
         // switch OFF the switch
         LOG(LL_INFO, ("AUTO SWITCH OFF (by inching)")); // CANCEL
         mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false);
+      } else {
+        LOG(LL_INFO, ("NOT EXPIRED")); // CANCEL
       }
     }
   }
@@ -72,7 +75,7 @@ bool mgos_bswitch_set_inching(mgos_bswitch_t sw, int timeout, bool lock) {
     if (timeout > 0) {
       if (s_inching_timer_id == MGOS_INVALID_TIMER_ID) {
         // initialize the inching global timer
-        s_inching_timer_id = mgos_set_timer(10, MGOS_TIMER_REPEAT, mg_bswitch_inching_cb, NULL);
+        s_inching_timer_id = mgos_set_timer(500, MGOS_TIMER_REPEAT, mg_bswitch_inching_cb, NULL);
         if (s_inching_timer_id == MGOS_INVALID_TIMER_ID) {
           LOG(LL_ERROR, ("Unable to start the internal inching timer for bSwitches.'"));
           return false;
