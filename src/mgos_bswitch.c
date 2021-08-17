@@ -90,6 +90,7 @@ bool mgos_bswitch_set_inching(mgos_bswitch_t sw, int timeout, bool lock) {
     struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG(sw);
     cfg->inching_timeout = timeout;
     cfg->inching_lock = (timeout == MGOS_BSWITCH_NO_INCHING ? false : lock);
+    LOG(LL_INFO, ("inching_timeout = %d", cfg->inching_timeout)); // CANCEL
     return true;
   }
   return false;
