@@ -28,10 +28,6 @@
 extern "C" {
 #endif
 
-// [   ACTUATORS ]-[    SENSORS ]-[ SYS]
-// [][][][][1][][]-[][][][][][][]-[0][0]
-#define MGOS_BSWITCH_TYPE 2048
-
 #define MGOS_BSWITCH_NO_GROUP 0
 #define MGOS_BSWITCH_NO_INCHING 0
 #define MGOS_BSWITCH_DEFAULT_SWITCHING_TIME 10 //milliseconds
