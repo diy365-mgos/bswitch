@@ -89,17 +89,70 @@ enum mgos_app_init_result mgos_app_init(void) {
   return MGOS_APP_INIT_SUCCESS;
 }
 ```
-## C/C++ APIs Reference
-### Inherited APIs
+## Inherited APIs
 A bSwitch inherits inherits APIs from:
 - [bThing](https://github.com/diy365-mgos/bthing)
 - [bBinarySensor](https://github.com/diy365-mgos/bbsensor)
 - [bBinaryActuator](https://github.com/diy365-mgos/bbactuator)
+### Remarks on: mgos_bthing_on_get_state()
+The [get-state handler](https://github.com/diy365-mgos/bthing#mgos_bthing_get_state_handler_t) must set `true` (ON) or `false` (OFF) the `state` parameter.
+```c
+static bool my_get_state_handler(mgos_bthing_t thing, mgos_bvar_t state, void *userdata) {
+  bool sw_state;
+  // sw_state = ... get the physical switch state (true or false)
+  mgos_bvar_set_bool(state, sw_state);
+  return true;
+}
+mgos_bswitch_t sw = mgos_bswitch_create(...);
+mgos_bthing_on_get_state(MGOS_BSWITCH_THINGCAST(sw), my_get_state_handler, NULL);
+```
+### Remarks on: mgos_bthing_get_state()
+The [mgos_bthing_get_state()](https://github.com/diy365-mgos/bthing#mgos_bthing_get_state) returns a boolean value or a string value in case [verbose state](https://github.com/diy365-mgos/bbsensor#mgos_bbsensor_set_verbose_state) is configured. Alternatively you can use the [mgos_bbsensor_get_state()](https://github.com/diy365-mgos/bbsensor#mgos_bbsensor_get_state) helper function.
+```c
+// standard (bool) state
+mgos_bswitch_t sw = mgos_bswitch_create(...);
+mgos_bvarc_t state = mgos_bthing_get_state(MGOS_BSWITCH_THINGCAST(sw));
+bool sw_state = mgos_bvar_get_bool(state);
+
+// verbose state
+mgos_bswitch_t sw = mgos_bswitch_create(...);
+mgos_bbsensor_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw), "ON", "OFF");
+mgos_bvarc_t state = mgos_bthing_get_state(MGOS_BBACTUATOR_THINGCAST(sw));
+const char *sw_state = mgos_bvar_get_str(state);
+```
+### Remarks on: mgos_bthing_on_set_state()
+The `state` parameter value in the [set-state handler](https://github.com/diy365-mgos/bthing#mgos_bthing_set_state_handler_t) is a boolean value.
+```c
+static bool my_set_state_handler(mgos_bthing_t thing, mgos_bvarc_t state, void *userdata) {
+  bool state_to_set = mgos_bvar_get_bool(state);
+  // set switch state...  
+  return true;
+}
+mgos_bswitch_t sw = mgos_bswitch_create(...);
+mgos_bthing_on_set_state(MGOS_BSWITCH_THINGCAST(sw), my_set_state_handler, NULL);
+```
+### Remarks on: mgos_bthing_set_state()
+The [mgos_bthing_set_state()](https://github.com/diy365-mgos/bthing#mgos_bthing_set_state) allows boolean values as input parameter. In case [verbose state](https://github.com/diy365-mgos/bbsensor#mgos_bbsensor_set_verbose_state) is configured, string values are allowed instead. Alternatively you can use [mgos_bbactuator_set_state()](https://github.com/diy365-mgos/bbactuator#mgos_bbactuator_set_state) or [mgos_bbactuator_toggle_state](https://github.com/diy365-mgos/bbactuator#mgos_bbactuator_toggle_state) helper functions.
+```c
+// standard (bool) state
+mgos_bswitch_t sw = mgos_bswitch_create(...);
+mgos_bvar_t state = mgos_bvar_new_bool(true);
+mgos_bthing_set_state(MGOS_BSWITCH_THINGCAST(sw), MGOS_BVAR_CONST(state));
+mgos_bvar_free(state);
+
+// verbose state
+mgos_bswitch_t sw = mgos_bswitch_create(...);
+mgos_bbsensor_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw), "ON", "OFF");
+mgos_bvar_t state = mgos_bvar_new_str("ON");
+mgos_bthing_set_state(MGOS_BSWITCH_THINGCAST(sw), MGOS_BVAR_CONST(state));
+mgos_bvar_free(state);
+```
+## C/C++ APIs Reference
 ### MGOS_BSWITCH_TYPE
 ```c
-#define MGOS_BSWITCH_TYPE 2048 
+#define MGOS_BSWITCH_TYPE
 ```
-The bSwitch type ID returned by [mgos_bthing_get_type()](https://github.com/diy365-mgos/bthing#mgos_bthing_get_type). It can be used with [mgos_bthing_is_typeof()](https://github.com/diy365-mgos/bthing#mgos_bthing_is_typeof).
+The bSwitch type ID. It can be used with [mgos_bthing_is_typeof()](https://github.com/diy365-mgos/bthing#mgos_bthing_is_typeof).
 
 Example:
 ```c
