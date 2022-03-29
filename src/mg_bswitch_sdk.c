@@ -102,7 +102,7 @@ enum mg_bthing_state_result mg_bswitch_setting_state_cb(struct mg_bthing_actu *s
                                                         void *userdata) {
   if (sw && state) {
     bool bool_state;
-    if (mgos_bbsensor_state_parse(MGOS_BBACTUATOR_SENSCAST(MGOS_BSWITCH_DOWNCAST(sw)), state, &bool_state)) {
+    if (mgos_bbinsens_state_parse(MGOS_BBACTUATOR_SENSCAST(MGOS_BSWITCH_DOWNCAST(sw)), state, &bool_state)) {
       struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG(sw);
       if (mg_bswitch_pre_set_state((mgos_bswitch_t )sw, cfg, bool_state)) {
         enum mg_bthing_state_result ret = cfg->overrides.setting_state_cb(sw, state, userdata);
@@ -119,7 +119,7 @@ enum mg_bthing_state_result mg_bswitch_setting_state_cb(struct mg_bthing_actu *s
 bool mg_bswitch_init(mgos_bswitch_t sw,
                      int group_id, int switching_time,
                      struct mg_bswitch_cfg *sw_cfg,
-                     struct mg_bbsensor_cfg *sens_cfg) {
+                     struct mg_bbinsens_cfg *sens_cfg) {
   if (sw_cfg) {
     // init actuator-base obj
     if (mg_bbactuator_init(sw, &sw_cfg->base, sens_cfg)) {

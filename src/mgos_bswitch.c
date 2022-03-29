@@ -26,7 +26,7 @@ mgos_bswitch_t mgos_bswitch_create(const char *id, int group_id, int switching_t
   mgos_bswitch_t MG_BSWITCH_NEW(sw);
   if (mg_bthing_init(MG_BTHING_ACTU_CAST4(sw), id, MGOS_BSWITCH_TYPE, domain)) {
     struct mg_bswitch_cfg *sw_cfg = calloc(1, sizeof(struct mg_bswitch_cfg));
-    struct mg_bbsensor_cfg *sens_cfg = calloc(1, sizeof(struct mg_bbsensor_cfg));
+    struct mg_bbinsens_cfg *sens_cfg = calloc(1, sizeof(struct mg_bbinsens_cfg));
     if (sens_cfg && sw_cfg) {
       mgos_bthing_t thing = MGOS_BSWITCH_THINGCAST(sw);
       if (mg_bswitch_init(sw, group_id, switching_time, sw_cfg, sens_cfg) && mg_bthing_register(thing)) {
@@ -34,7 +34,7 @@ mgos_bswitch_t mgos_bswitch_create(const char *id, int group_id, int switching_t
         return sw;
       }
     } else {
-      LOG(LL_ERROR, ("Unable to allocate memory for 'mg_bbsensor_cfg' and/or 'mg_bswitch_cfg'"));
+      LOG(LL_ERROR, ("Unable to allocate memory for 'mg_bbinsens_cfg' and/or 'mg_bswitch_cfg'"));
     }
     free(sens_cfg);
     free(sw_cfg);

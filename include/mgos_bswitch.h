@@ -22,7 +22,7 @@
 #include "mgos_bthing.h"
 #include "mgos_bswitch.h"
 #include "mgos_bbactuator.h"
-#include "mgos_bbsensor.h"
+#include "mgos_bbinsens.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,7 +37,7 @@ typedef struct mg_bthing_actu *mgos_bswitch_t;
 
 mgos_bthing_t MGOS_BSWITCH_THINGCAST(mgos_bswitch_t sw);
 
-mgos_bbsensor_t MGOS_BSWITCH_SENSCAST(mgos_bswitch_t sw);
+mgos_bbinsens_t MGOS_BSWITCH_SENSCAST(mgos_bswitch_t sw);
 
 mgos_bbactuator_t MGOS_BSWITCH_DOWNCAST(mgos_bswitch_t sw);
 

@@ -5,7 +5,7 @@ A bSwitch allows you to easily manage physical switches like relays.
 - **Inching mode** - A bSwitch can be easily configured to be automatically turned off after a timeout.
 - **Inching lock** - A locked bSwitch cannot be turned off until the inching timeout is expired.
 - **Interlock mode** - Two or more interlocked bSwitches cannot be turned on simultaneously. When one switch is turned on, all the others are forcibly turned off. Only one single interlocked bSwitch can be turned on at a time. 
-- **Verbose state** - Optionally, you can configure verbose state instead of default booleans (e.g: 'ON'/'OFF'). This feature is inherited form [bBinarySensors](https://github.com/diy365-mgos/bbsensor#features).
+- **Verbose state** - Optionally, you can configure verbose state instead of default booleans (e.g: 'ON'/'OFF'). This feature is inherited form [bBinarySensors](https://github.com/diy365-mgos/bbinsens#features).
 ## GET STARTED
 Copy, build and flash one of the following ready-to-use firmwares.
 #### Example 1 - 4 relays array
@@ -51,7 +51,7 @@ void turn_switch2_on_cb(void *param) {
 void toggle_switch_grp_cb(void *param) {
   bool state;
   mgos_bswitch_t sw = (mgos_bswitch_t)mgos_bthing_get_by_uid("switch3");
-  mgos_bbsensor_get_state(MGOS_BSWITCH_SENSCAST(sw), &state);
+  mgos_bbinsens_get_state(MGOS_BSWITCH_SENSCAST(sw), &state);
   if (state) sw = (mgos_bswitch_t)mgos_bthing_get_by_uid("switch4");
   mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST(sw), true);
   (void) param;
@@ -62,14 +62,14 @@ enum mgos_app_init_result mgos_app_init(void) {
 
   // create the switch #1 - standard mode
   mgos_bswitch_t sw1 = mgos_bswitch_create("switch1", MGOS_BSWITCH_NO_GROUP, MGOS_BSWITCH_DEFAULT_SWITCHING_TIME, "relays");
-  mgos_bbsensor_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw1), "ON", "OFF");
+  mgos_bbinsens_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw1), "ON", "OFF");
   mgos_bthing_gpio_attach(MGOS_BSWITCH_THINGCAST(sw1), gpio_pin1, true, MGOS_GPIO_PULL_UP);
   // simulate an external trigger for toggling 'switch1' state
   mgos_set_timer(10000, MGOS_TIMER_REPEAT, toggle_switch1_cb, sw1);
 
   // create the switch #2 - inching mode
   mgos_bswitch_t sw2 = mgos_bswitch_create("switch2", MGOS_BSWITCH_NO_GROUP, MGOS_BSWITCH_DEFAULT_SWITCHING_TIME, "relays");
-  mgos_bbsensor_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw2), "ON", "OFF");
+  mgos_bbinsens_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw2), "ON", "OFF");
   mgos_bthing_gpio_attach(MGOS_BSWITCH_THINGCAST(sw2), gpio_pin2, true, MGOS_GPIO_PULL_UP);
   mgos_bswitch_set_inching(sw2, 1000, true);
   // simulate an external trigger for turning ON the 'switch2' 
@@ -77,11 +77,11 @@ enum mgos_app_init_result mgos_app_init(void) {
 
   // create the switch #3 - interlock monde (group 1)
   mgos_bswitch_t sw3 = mgos_bswitch_create("switch3", 1, MGOS_BSWITCH_DEFAULT_SWITCHING_TIME, "relays");
-  mgos_bbsensor_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw3), "ON", "OFF");
+  mgos_bbinsens_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw3), "ON", "OFF");
   mgos_bthing_gpio_attach(MGOS_BSWITCH_THINGCAST(sw3), gpio_pin3, true, MGOS_GPIO_PULL_UP);
   // create the switch #4 - interlock monde (group 1)
   mgos_bswitch_t sw4 = mgos_bswitch_create("switch4", 1, MGOS_BSWITCH_DEFAULT_SWITCHING_TIME, "relays");
-  mgos_bbsensor_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw4), "ON", "OFF");
+  mgos_bbinsens_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw4), "ON", "OFF");
   mgos_bthing_gpio_attach(MGOS_BSWITCH_THINGCAST(sw4), gpio_pin4, true, MGOS_GPIO_PULL_UP);
   // simulate an external trigger for toggling 'switch3' and 'switch4'
   mgos_set_timer(10000, MGOS_TIMER_REPEAT, toggle_switch_grp_cb, NULL);
@@ -92,7 +92,7 @@ enum mgos_app_init_result mgos_app_init(void) {
 ## Inherited APIs
 A bSwitch inherits inherits APIs from:
 - [bThing](https://github.com/diy365-mgos/bthing)
-- [bBinarySensor](https://github.com/diy365-mgos/bbsensor)
+- [bBinarySensor](https://github.com/diy365-mgos/bbinsens)
 - [bBinaryActuator](https://github.com/diy365-mgos/bbactuator)
 ### Remarks on: mgos_bthing_on_get_state()
 The [get-state handler](https://github.com/diy365-mgos/bthing#mgos_bthing_get_state_handler_t) must set `true` (ON) or `false` (OFF) the `state` parameter.
@@ -107,7 +107,7 @@ mgos_bswitch_t sw = mgos_bswitch_create(...);
 mgos_bthing_on_get_state(MGOS_BSWITCH_THINGCAST(sw), my_get_state_handler, NULL);
 ```
 ### Remarks on: mgos_bthing_get_state()
-The [mgos_bthing_get_state()](https://github.com/diy365-mgos/bthing#mgos_bthing_get_state) returns a boolean value or a string value in case [verbose state](https://github.com/diy365-mgos/bbsensor#mgos_bbsensor_set_verbose_state) is configured. Alternatively you can use the [mgos_bbsensor_get_state()](https://github.com/diy365-mgos/bbsensor#mgos_bbsensor_get_state) helper function.
+The [mgos_bthing_get_state()](https://github.com/diy365-mgos/bthing#mgos_bthing_get_state) returns a boolean value or a string value in case [verbose state](https://github.com/diy365-mgos/bbinsens#mgos_bbinsens_set_verbose_state) is configured. Alternatively you can use the [mgos_bbinsens_get_state()](https://github.com/diy365-mgos/bbinsens#mgos_bbinsens_get_state) helper function.
 ```c
 // standard (bool) state
 mgos_bswitch_t sw = mgos_bswitch_create(...);
@@ -116,7 +116,7 @@ bool sw_state = mgos_bvar_get_bool(state);
 
 // verbose state
 mgos_bswitch_t sw = mgos_bswitch_create(...);
-mgos_bbsensor_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw), "ON", "OFF");
+mgos_bbinsens_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw), "ON", "OFF");
 mgos_bvarc_t state = mgos_bthing_get_state(MGOS_BBACTUATOR_THINGCAST(sw));
 const char *sw_state = mgos_bvar_get_str(state);
 ```
@@ -132,7 +132,7 @@ mgos_bswitch_t sw = mgos_bswitch_create(...);
 mgos_bthing_on_set_state(MGOS_BSWITCH_THINGCAST(sw), my_set_state_handler, NULL);
 ```
 ### Remarks on: mgos_bthing_set_state()
-The [mgos_bthing_set_state()](https://github.com/diy365-mgos/bthing#mgos_bthing_set_state) allows boolean values as input parameter. In case [verbose state](https://github.com/diy365-mgos/bbsensor#mgos_bbsensor_set_verbose_state) is configured, string values are allowed instead. Alternatively you can use [mgos_bbactuator_set_state()](https://github.com/diy365-mgos/bbactuator#mgos_bbactuator_set_state) or [mgos_bbactuator_toggle_state](https://github.com/diy365-mgos/bbactuator#mgos_bbactuator_toggle_state) helper functions.
+The [mgos_bthing_set_state()](https://github.com/diy365-mgos/bthing#mgos_bthing_set_state) allows boolean values as input parameter. In case [verbose state](https://github.com/diy365-mgos/bbinsens#mgos_bbinsens_set_verbose_state) is configured, string values are allowed instead. Alternatively you can use [mgos_bbactuator_set_state()](https://github.com/diy365-mgos/bbactuator#mgos_bbactuator_set_state) or [mgos_bbactuator_toggle_state](https://github.com/diy365-mgos/bbactuator#mgos_bbactuator_toggle_state) helper functions.
 ```c
 // standard (bool) state
 mgos_bswitch_t sw = mgos_bswitch_create(...);
@@ -142,7 +142,7 @@ mgos_bvar_free(state);
 
 // verbose state
 mgos_bswitch_t sw = mgos_bswitch_create(...);
-mgos_bbsensor_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw), "ON", "OFF");
+mgos_bbinsens_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw), "ON", "OFF");
 mgos_bvar_t state = mgos_bvar_new_str("ON");
 mgos_bthing_set_state(MGOS_BSWITCH_THINGCAST(sw), MGOS_BVAR_CONST(state));
 mgos_bvar_free(state);
@@ -165,7 +165,7 @@ if (mgos_bthing_is_typeof(MGOS_BACTUATOR_THINGCAST(sw), MGOS_BACTUATOR_TYPE))
   LOG(LL_INFO, ("I'm a bActuator."));
 if (mgos_bthing_is_typeof(MGOS_BACTUATOR_THINGCAST(sw), MGOS_BTHING_TYPE_ACTUATOR))
   LOG(LL_INFO, ("I'm a bThing actuator."));
-if (mgos_bthing_is_typeof(MGOS_BACTUATOR_THINGCAST(sw), MGOS_BBSENSOR_TYPE))
+if (mgos_bthing_is_typeof(MGOS_BACTUATOR_THINGCAST(sw), MGOS_BBINSENS_TYPE))
   LOG(LL_INFO, ("I'm a bBinarySensor."));
 if (mgos_bthing_is_typeof(MGOS_BACTUATOR_THINGCAST(sw), MGOS_BSENSOR_TYPE))
   LOG(LL_INFO, ("I'm a bSensor."));
@@ -199,9 +199,9 @@ LOG(LL_INFO, ("%s successfully created.", mgos_bthing_get_uid(MGOS_BSWITCH_THING
 ```
 ### MGOS_BSWITCH_SENSCAST
 ```c
-mgos_bbsensor_t MGOS_BSWITCH_SENSCAST(mgos_bswitch_t sw);
+mgos_bbinsens_t MGOS_BSWITCH_SENSCAST(mgos_bswitch_t sw);
 ```
-Casts a bSwitch to a bBinarySensor to be used with [inherited bBinarySensor APIs](https://github.com/diy365-mgos/bbsensor).
+Casts a bSwitch to a bBinarySensor to be used with [inherited bBinarySensor APIs](https://github.com/diy365-mgos/bbinsens).
 
 |Parameter||
 |--|--|
@@ -211,7 +211,7 @@ Example:
 ```c
 mgos_bswitch_t sw = mgos_bswitch_create(...);
 bool state;
-if (mgos_bbsensor_get_state(MGOS_BSWITCH_SENSCAST(sw), &state))
+if (mgos_bbinsens_get_state(MGOS_BSWITCH_SENSCAST(sw), &state))
   LOG(LL_INFO, ("The state is %s.", (state ? "TRUE" : "FALSE")));
 ```
 ### MGOS_BSWITCH_DOWNCAST

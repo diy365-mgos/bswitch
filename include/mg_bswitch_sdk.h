@@ -59,7 +59,7 @@ struct mg_bswitch_cfg {
 bool mg_bswitch_init(mgos_bswitch_t sw,
                      int group_id, int switching_time,
                      struct mg_bswitch_cfg *sw_cfg,
-                     struct mg_bbsensor_cfg *sens_cfg);
+                     struct mg_bbinsens_cfg *sens_cfg);
 
 void mg_bswitch_reset(mgos_bswitch_t sw);
 
