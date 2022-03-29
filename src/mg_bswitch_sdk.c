@@ -41,7 +41,7 @@ bool mg_bswitch_pre_set_state_on(mgos_bswitch_t sw, struct mg_bswitch_cfg *sw_cf
           return false;
         }
         // switch OFF all switches in the same group 
-        if (!mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false)) {
+        if (!mgos_bbinactu_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false)) {
           LOG(LL_ERROR, ("Error switching '%s' ON becuase error switching OFF the sibling '%s'.",
             mgos_bthing_get_uid(MGOS_BSWITCH_THINGCAST(sw)), mgos_bthing_get_uid(thing)));
           return false;
@@ -102,7 +102,7 @@ enum mg_bthing_state_result mg_bswitch_setting_state_cb(struct mg_bthing_actu *s
                                                         void *userdata) {
   if (sw && state) {
     bool bool_state;
-    if (mgos_bbinsens_state_parse(MGOS_BBACTUATOR_SENSCAST(MGOS_BSWITCH_DOWNCAST(sw)), state, &bool_state)) {
+    if (mgos_bbinsens_state_parse(MGOS_BBINACTU_SENSCAST(MGOS_BSWITCH_DOWNCAST(sw)), state, &bool_state)) {
       struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG(sw);
       if (mg_bswitch_pre_set_state((mgos_bswitch_t )sw, cfg, bool_state)) {
         enum mg_bthing_state_result ret = cfg->overrides.setting_state_cb(sw, state, userdata);
@@ -122,7 +122,7 @@ bool mg_bswitch_init(mgos_bswitch_t sw,
                      struct mg_bbinsens_cfg *sens_cfg) {
   if (sw_cfg) {
     // init actuator-base obj
-    if (mg_bbactuator_init(sw, &sw_cfg->base, sens_cfg)) {
+    if (mg_bbinactu_init(sw, &sw_cfg->base, sens_cfg)) {
       /* initalize general settings */
       sw_cfg->group_id = (group_id <= 0 ? MGOS_BSWITCH_NO_GROUP : group_id);
       sw_cfg->switching_time = (switching_time == -1 ? MGOS_BSWITCH_DEFAULT_SWITCHING_TIME : switching_time);
@@ -162,5 +162,5 @@ void mg_bswitch_reset(mgos_bswitch_t sw) {
   cfg->inching_start = 0;
 
   // reset actuator-base obj
-  mg_bbactuator_reset(sw);
+  mg_bbinactu_reset(sw);
 }

@@ -21,7 +21,7 @@
 #include <stdbool.h>
 #include "mgos_bthing.h"
 #include "mgos_bswitch.h"
-#include "mgos_bbactuator.h"
+#include "mgos_bbinactu.h"
 #include "mgos_bbinsens.h"
 
 #ifdef __cplusplus
@@ -39,7 +39,7 @@ mgos_bthing_t MGOS_BSWITCH_THINGCAST(mgos_bswitch_t sw);
 
 mgos_bbinsens_t MGOS_BSWITCH_SENSCAST(mgos_bswitch_t sw);
 
-mgos_bbactuator_t MGOS_BSWITCH_DOWNCAST(mgos_bswitch_t sw);
+mgos_bbinactu_t MGOS_BSWITCH_DOWNCAST(mgos_bswitch_t sw);
 
 mgos_bswitch_t mgos_bswitch_create(const char *id, int group_id, int switching_time, const char *domain);
 

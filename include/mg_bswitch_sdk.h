@@ -20,7 +20,7 @@
 
 #include <stdbool.h>
 #include "mg_bthing_sdk.h"
-#include "mg_bbactuator_sdk.h"
+#include "mg_bbinactu_sdk.h"
 #include "mgos_bswitch.h"
 
 #ifdef __cplusplus
@@ -47,7 +47,7 @@ struct mg_bswitch_overrides {
 };
 
 struct mg_bswitch_cfg {
-  struct mg_bbactuator_cfg base;
+  struct mg_bbinactu_cfg base;
   struct mg_bswitch_overrides overrides;
   int group_id;
   int switching_time;

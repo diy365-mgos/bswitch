@@ -41,11 +41,11 @@ static void switch_state_changed_cb(int ev, void *ev_data, void *userdata) {
 }
 
 void toggle_switch1_cb(void *param) {
-  mgos_bbactuator_toggle_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)param));
+  mgos_bbinactu_toggle_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)param));
 }
 
 void turn_switch2_on_cb(void *param) {
-  mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)param), true);
+  mgos_bbinactu_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)param), true);
 }
 
 void toggle_switch_grp_cb(void *param) {
@@ -53,7 +53,7 @@ void toggle_switch_grp_cb(void *param) {
   mgos_bswitch_t sw = (mgos_bswitch_t)mgos_bthing_get_by_uid("switch3");
   mgos_bbinsens_get_state(MGOS_BSWITCH_SENSCAST(sw), &state);
   if (state) sw = (mgos_bswitch_t)mgos_bthing_get_by_uid("switch4");
-  mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST(sw), true);
+  mgos_bbinactu_set_state(MGOS_BSWITCH_DOWNCAST(sw), true);
   (void) param;
 }
 
@@ -93,7 +93,7 @@ enum mgos_app_init_result mgos_app_init(void) {
 A bSwitch inherits inherits APIs from:
 - [bThing](https://github.com/diy365-mgos/bthing)
 - [bBinarySensor](https://github.com/diy365-mgos/bbinsens)
-- [bBinaryActuator](https://github.com/diy365-mgos/bbactuator)
+- [bBinaryActuator](https://github.com/diy365-mgos/bbinactu)
 ### Remarks on: mgos_bthing_on_get_state()
 The [get-state handler](https://github.com/diy365-mgos/bthing#mgos_bthing_get_state_handler_t) must set `true` (ON) or `false` (OFF) the `state` parameter.
 ```c
@@ -117,7 +117,7 @@ bool sw_state = mgos_bvar_get_bool(state);
 // verbose state
 mgos_bswitch_t sw = mgos_bswitch_create(...);
 mgos_bbinsens_set_verbose_state(MGOS_BSWITCH_SENSCAST(sw), "ON", "OFF");
-mgos_bvarc_t state = mgos_bthing_get_state(MGOS_BBACTUATOR_THINGCAST(sw));
+mgos_bvarc_t state = mgos_bthing_get_state(MGOS_BBINACTU_THINGCAST(sw));
 const char *sw_state = mgos_bvar_get_str(state);
 ```
 ### Remarks on: mgos_bthing_on_set_state()
@@ -132,7 +132,7 @@ mgos_bswitch_t sw = mgos_bswitch_create(...);
 mgos_bthing_on_set_state(MGOS_BSWITCH_THINGCAST(sw), my_set_state_handler, NULL);
 ```
 ### Remarks on: mgos_bthing_set_state()
-The [mgos_bthing_set_state()](https://github.com/diy365-mgos/bthing#mgos_bthing_set_state) allows boolean values as input parameter. In case [verbose state](https://github.com/diy365-mgos/bbinsens#mgos_bbinsens_set_verbose_state) is configured, string values are allowed instead. Alternatively you can use [mgos_bbactuator_set_state()](https://github.com/diy365-mgos/bbactuator#mgos_bbactuator_set_state) or [mgos_bbactuator_toggle_state](https://github.com/diy365-mgos/bbactuator#mgos_bbactuator_toggle_state) helper functions.
+The [mgos_bthing_set_state()](https://github.com/diy365-mgos/bthing#mgos_bthing_set_state) allows boolean values as input parameter. In case [verbose state](https://github.com/diy365-mgos/bbinsens#mgos_bbinsens_set_verbose_state) is configured, string values are allowed instead. Alternatively you can use [mgos_bbinactu_set_state()](https://github.com/diy365-mgos/bbinactu#mgos_bbinactu_set_state) or [mgos_bbinactu_toggle_state](https://github.com/diy365-mgos/bbinactu#mgos_bbinactu_toggle_state) helper functions.
 ```c
 // standard (bool) state
 mgos_bswitch_t sw = mgos_bswitch_create(...);
@@ -159,7 +159,7 @@ Example:
 mgos_bactuator_t sw = mgos_bswitch_create(...);
 if (mgos_bthing_is_typeof(MGOS_BACTUATOR_THINGCAST(sw), MGOS_BSWITCH_TYPE))
   LOG(LL_INFO, ("I'm a bSwitch."));
-if (mgos_bthing_is_typeof(MGOS_BACTUATOR_THINGCAST(sw), MGOS_BBACTUATOR_TYPE))
+if (mgos_bthing_is_typeof(MGOS_BACTUATOR_THINGCAST(sw), MGOS_BBINACTU_TYPE))
   LOG(LL_INFO, ("I'm a bBinaryActuator."));
 if (mgos_bthing_is_typeof(MGOS_BACTUATOR_THINGCAST(sw), MGOS_BACTUATOR_TYPE))
   LOG(LL_INFO, ("I'm a bActuator."));
@@ -216,9 +216,9 @@ if (mgos_bbinsens_get_state(MGOS_BSWITCH_SENSCAST(sw), &state))
 ```
 ### MGOS_BSWITCH_DOWNCAST
 ```c
-mgos_bbactuator_t MGOS_BSWITCH_DOWNCAST(mgos_bswitch_t sw);
+mgos_bbinactu_t MGOS_BSWITCH_DOWNCAST(mgos_bswitch_t sw);
 ```
-Casts a bSwitch to a bBinaryActuator to be used with [inherited bBinaryActuator APIs](https://github.com/diy365-mgos/bbactuator).
+Casts a bSwitch to a bBinaryActuator to be used with [inherited bBinaryActuator APIs](https://github.com/diy365-mgos/bbinactu).
 
 |Parameter||
 |--|--|
@@ -227,7 +227,7 @@ Casts a bSwitch to a bBinaryActuator to be used with [inherited bBinaryActuator 
 Example:
 ```c
 mgos_bswitch_t sw = mgos_bswitch_create(...);
-mgos_bbactuator_toggle_state(MGOS_BSWITCH_DOWNCAST(sw)));
+mgos_bbinactu_toggle_state(MGOS_BSWITCH_DOWNCAST(sw)));
 ```
 ### mgos_bswitch_create
 ```c

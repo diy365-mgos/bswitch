@@ -15,7 +15,7 @@ filesystem:
 config_schema:
 
 libs:
-  - origin: https://github.com/diy365-mgos/bbactuator
+  - origin: https://github.com/diy365-mgos/bbinactu
 
 tags:
   - c

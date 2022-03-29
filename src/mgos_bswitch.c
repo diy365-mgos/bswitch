@@ -18,8 +18,8 @@ mgos_bsensor_t MGOS_BSWITCH_SENSCAST(mgos_bswitch_t sw) {
   return (mgos_bsensor_t)MG_BSWITCH_CAST1(sw);
 }
 
-mgos_bbactuator_t MGOS_BSWITCH_DOWNCAST(mgos_bswitch_t sw) {
-  return (mgos_bbactuator_t)sw;
+mgos_bbinactu_t MGOS_BSWITCH_DOWNCAST(mgos_bswitch_t sw) {
+  return (mgos_bbinactu_t)sw;
 }
 
 mgos_bswitch_t mgos_bswitch_create(const char *id, int group_id, int switching_time, const char *domain) {
@@ -58,7 +58,7 @@ static void mg_bswitch_inching_cb(void *arg) {
         // stop inching
         cfg->inching_start = 0;
         // switch OFF the switch
-        mgos_bbactuator_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false);
+        mgos_bbinactu_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false);
       }
     }
   }
