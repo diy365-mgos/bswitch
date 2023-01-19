@@ -13,6 +13,8 @@ filesystem:
   - fs
 
 config_schema:
+  - ["bthing.bswitch", "o", {title: "bSwitches library settings"}]
+  - ["bthing.bswitch.inching_timer", i, 400, {title: "Inching timer timeout (in milliseconds)"}]
 
 libs:
   - origin: https://github.com/diy365-mgos/bbinactu

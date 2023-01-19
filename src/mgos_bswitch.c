@@ -72,7 +72,8 @@ bool mgos_bswitch_set_inching(mgos_bswitch_t sw, int timeout, bool lock) {
     if (timeout > 0) {
       if (s_inching_timer_id == MGOS_INVALID_TIMER_ID) {
         // initialize the inching global timer
-        s_inching_timer_id = mgos_set_timer(500, MGOS_TIMER_REPEAT, mg_bswitch_inching_cb, NULL);
+        s_inching_timer_id = mgos_set_timer(mgos_sys_config_get_bthing_bswitch_inching_timer(),
+          MGOS_TIMER_REPEAT, mg_bswitch_inching_cb, NULL);
         if (s_inching_timer_id == MGOS_INVALID_TIMER_ID) {
           LOG(LL_ERROR, ("Unable to start the internal inching timer for bSwitches.'"));
           return false;
