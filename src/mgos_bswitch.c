@@ -59,7 +59,7 @@ static void mg_bswitch_inching_cb(void *arg) {
         cfg->inching_start = 0;
         // switch OFF the switch
         mgos_bbinactu_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false);
-        LOG(LL_INFO, ("Switched of after inching timeout"));
+        //LOG(LL_INFO, ("Switched of after inching timeout"));
       }
     }
   }
