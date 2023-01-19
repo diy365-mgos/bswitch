@@ -59,6 +59,7 @@ static void mg_bswitch_inching_cb(void *arg) {
         cfg->inching_start = 0;
         // switch OFF the switch
         mgos_bbinactu_set_state(MGOS_BSWITCH_DOWNCAST((mgos_bswitch_t)thing), false);
+        LOG(LL_INFO, ("Switched of after inching timeout"));
       }
     }
   }
@@ -87,6 +88,7 @@ bool mgos_bswitch_set_inching(mgos_bswitch_t sw, int timeout, bool lock) {
     }
 
     struct mg_bswitch_cfg *cfg = MG_BSWITCH_CFG(sw);
+    cfg->inching_start = 0;
     cfg->inching_timeout = timeout;
     cfg->inching_lock = (timeout == MGOS_BSWITCH_NO_INCHING ? false : lock);
     return true;
